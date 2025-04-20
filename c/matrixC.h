@@ -14,8 +14,8 @@ typedef struct
 Matrix* create(int rows, int cols);
 void fill(Matrix *matrixPtr, int row, int col, int val);
 Matrix* transpose(Matrix *A);
-Matrix* add2(Matrix *A, Matrix *B);
-Matrix* multiply2(Matrix *A, Matrix *B);
+Matrix* add2(Matrix *A, Matrix *B, int *err);
+Matrix* multiply2(Matrix *A, Matrix *B, int *err);
 Matrix* scalarMultiply(int scalar, Matrix *A);
 void print(Matrix *matrixPtr);
 void freeMatrix(Matrix *matrixPtr);
