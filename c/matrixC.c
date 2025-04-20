@@ -39,6 +39,11 @@ Matrix* create(int rows, int cols){
 }
 
 void fill(Matrix *matrixPtr, int row, int col, int val){
+    if (row < 0 || row >= matrixPtr->rows || 
+        col < 0 || col >= matrixPtr->cols){
+        printf("Error: Matrix out of bounds.\n");
+        exit(1);
+    }
     matrixPtr->data[row][col] = val;
 }
 
@@ -52,8 +57,21 @@ Matrix* transpose(Matrix *A){
     return result;
 }
 
-Matrix* add2(Matrix *A, Matrix *B){
+Matrix* add2(Matrix *A, Matrix *B, int *err){
+    if (A->rows != B->rows || A->cols != B->cols){
+        printf("Error: Matrix dimensions are incorrect for this operation (addition).\n");
+        exit(1);
+        *err = 1;
+        return NULL;
+    }
     Matrix *sum = create(A->rows, A->cols);
+    if (sum == NULL){
+        printf("Error: Memory allocation error for this operation (addition).\n");
+        exit(1);
+        *err = 1;
+        return NULL;
+    }
+    *err = 0;
     for (int r = 0; r < A->rows; r++) {
         for (int c = 0; c < A->cols; c++) {
             fill(sum, r, c, A->data[r][c] + B->data[r][c]);
@@ -62,17 +80,27 @@ Matrix* add2(Matrix *A, Matrix *B){
     return sum;
 }
 
-Matrix* multiply2(Matrix *A, Matrix *B){
+Matrix* multiply2(Matrix *A, Matrix *B, int *err){
+    if (A->cols != B->rows){
+        printf("Error: Matrix dimensions are incorrect for this operation (multiplication).");
+        *err = 1;
+        return NULL;
+    }
     Matrix *product = create(A->rows, B->cols);
-    if (A->cols == B->rows){
-        for (int r = 0; r < A->rows; r++){
-            for (int c = 0; c < B->cols; c++){
-                int sum = 0;
-                for (int i = 0; i < A->cols; i++){
-                    sum += A->data[r][i] * B->data[i][c];
-                }
-                fill(product, r, c, sum);
+    if (product == NULL){
+        printf("Error: Memory allocation error for this operation (multiplication).\n");
+        exit(1);
+        *err = 1;
+        return NULL;
+    }
+    *err = 0;
+    for (int r = 0; r < A->rows; r++){
+        for (int c = 0; c < B->cols; c++){
+            int sum = 0;
+            for (int i = 0; i < A->cols; i++){
+                sum += A->data[r][i] * B->data[i][c];
             }
+            fill(product, r, c, sum);
         }
     }
     return product;
